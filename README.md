@@ -15,11 +15,11 @@
 
 ## About
 
-1. **Simple Wallet Connector**: You want to integrate Weld, a TypeScript and browser wallet connector, in JavaScript within Unity.
-2. **Wallet Interaction**: The goal is to connect the user's wallet, sign transactions, and perform other wallet-related interactions.
-3. **Events**: You're using JavaScript events to update your Unity WebGL application or game when necessary.
-4. **Backend Requirement**: This Plugin only utilizes signature capabilities, you still have to use a backend for handling more complex operations.
-- **Reusability**: I was able to reuse 80% of the code from my Deno, Hono and HTMX Project.
+1. **Simple Wallet Integration Plugin**: This plugin integrates Weld, a TypeScript-based wallet connector, within Unity applications using JavaScript.
+2. **Wallet Interaction Functionality**: The goal is to establish a connection between the user's wallet, enabling signing of transactions and other wallet-related interactions.
+3. **Event-Driven Updates**: JavaScript events are used to notify and update the Unity WebGL application or game as necessary.
+4. **Backend Dependency**: This plugin relies on signature capabilities only; a backend must be implemented for handling more complex operations.
+5. **Code Reusability**: The code was successfully reused from the original Deno, Hono and HTMX Project.
 
 ### TODO
 
@@ -28,6 +28,7 @@
 - [ ] Send UTXos to Backend from wallet state (Currently I send the change address and fetch utxos using blockfrost).
 - [ ] Improve UI to create a reusable gameobject.
 - [ ] Create a simple Interactive demo to play a "game".
+- [ ] Provide a simple Deno/Hono setup to test.
 
 ---
 
