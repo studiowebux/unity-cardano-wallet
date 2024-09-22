@@ -1,15 +1,28 @@
-function init() {
+function initWeld() {
   console.log("WELD INIT");
-  // TODO: Generate the list of client available wallets
-  // Useful to build a Unity UI to connect a specific wallet.
+
   Weld.extensions.subscribeWithSelector(
     (s) => s.allArr,
     (extensions) => {
-      myGameInstance.SendMessage(
-        "Wallet",
-        "SetWalletAvailable",
-        JSON.stringify(extensions)
-      );
+      console.log("extensions", extensions)
+      if (!myGameInstance) {
+        console.debug("Will retry in a sec.");
+        // This is bad, i know ..
+        setTimeout(()=> myGameInstance?.SendMessage(
+          "Wallet",
+          "SetWalletAvailable",
+          extensions.map(a => a.info.key)?.join(",") || ""
+        ),1000)
+      } else {
+        // TODO: We need to retry sending this message, there is a race condition, 
+        //       and didn't find in unity documentation how to solve it.
+        myGameInstance?.SendMessage(
+          "Wallet",
+          "SetWalletAvailable",
+          extensions.map(a => a.info.key)?.join(",") || ""
+        );
+        // The dirty trick right now is the button that load the wallet into the view...
+      }
     }
   );
 
@@ -18,12 +31,13 @@ function init() {
     (update) => {
       console.log("update", update);
       try {
-        myGameInstance.SendMessage("Wallet", "UpdateBalance", update || 0);
+        if(!isNaN(update))
+          myGameInstance?.SendMessage("Wallet", "UpdateBalance", update || 0);
       } catch (e) {
         console.error(e);
       }
     },
-    { fireImmediately: true }
+    { fireImmediately: false }
   );
 
   Weld.wallet.subscribeWithSelector(
@@ -31,12 +45,12 @@ function init() {
     (update) => {
       console.log("update", update);
       try {
-        myGameInstance.SendMessage("Wallet", "UpdateAddress", update);
+        myGameInstance?.SendMessage("Wallet", "UpdateAddress", update);
       } catch (e) {
         console.error(e);
       }
     },
-    { fireImmediately: true }
+    { fireImmediately: false }
   );
 
   Weld.wallet.subscribeWithSelector(
@@ -44,17 +58,17 @@ function init() {
     (update) => {
       console.log("Update", update);
       try {
-        myGameInstance.SendMessage("Wallet", "UpdateWalletName", update);
+        myGameInstance?.SendMessage("Wallet", "UpdateWalletName", update);
       } catch (e) {
         console.error(e);
       }
     }
   );
 
-  Weld.wallet.getState().connect("nami");
-
   // Should be automatic, will fix in next version
   Weld.wallet.getState().__persist?.();
 
   Weld.setupStores(Weld.wallet, Weld.extensions);
 }
+
+initWeld();
