@@ -1,5 +1,4 @@
 mergeInto(LibraryManager.library, {
-
   Init: function () {
     // initWeld();
   },
@@ -10,10 +9,19 @@ mergeInto(LibraryManager.library, {
   },
 
   GetSupportedWallet: function () {
-    console.log(Weld.extensions.getState().supportedArr)
-    console.log(Weld.extensions.getState().supportedArr.map(a => a.info.key)?.join(",") || "")
-    
-    var returnStr = Weld.extensions.getState().supportedArr.map(a => a.info.key)?.join(",") || "";
+    console.log(Weld.extensions.getState().supportedArr);
+    console.log(
+      Weld.extensions
+        .getState()
+        .supportedArr.map((a) => a.info.key)
+        ?.join(",") || "",
+    );
+
+    var returnStr =
+      Weld.extensions
+        .getState()
+        .supportedArr.map((a) => a.info.key)
+        ?.join(",") || "";
     var bufferSize = lengthBytesUTF8(returnStr) + 1;
     var buffer = _malloc(bufferSize);
     stringToUTF8(returnStr, buffer, bufferSize);
@@ -27,8 +35,7 @@ mergeInto(LibraryManager.library, {
     await signAndSubmit(
       UTF8ToString(tx),
       UTF8ToString(nonces).split(","),
-      UTF8ToString(hash)
+      UTF8ToString(hash),
     );
   },
-  
 });

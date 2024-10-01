@@ -46,18 +46,12 @@ public class Wallet : MonoBehaviour
 
     void Start()
     {
-        // TODO: Need to implement the wallet selection and save the state to autoreconnect (if it is required)
         Init();
-
-        // Setup UI
-        // Connect();
     }
 
     public void ReloadWallets()
     {
         var wallets = GetSupportedWallet();
-        Debug.Log("Wallets from reload");
-        Debug.Log(wallets);
         SetWalletAvailable(wallets);
     }
 
@@ -71,7 +65,7 @@ public class Wallet : MonoBehaviour
     {
         Dictionary<string, string> form = new();
         form["address"] = this.addressText;
-        form["quantity"] = "2";
+        form["quantity"] = "1";
 
         using (UnityWebRequest www = UnityWebRequest.Post("http://localhost:8000/mint/character/generalist", form))
         {
@@ -80,13 +74,11 @@ public class Wallet : MonoBehaviour
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(www.error);
+                this.message.text = www.error;
             }
             else
             {
-                // Show results as text
                 var json = www.downloadHandler.text;
-                Debug.Log(json);
-
                 TransactionInfo tx = TransactionInfo.CreateFromJSON(json);
                 this.SignAndSubmitTx(tx.tx, String.Join(",", tx.nonces), tx.hash);
             }
@@ -100,7 +92,7 @@ public class Wallet : MonoBehaviour
 
     public void UpdateBalance(float balance)
     {
-        this.balance.text = balance.ToString();
+        this.balance.text = balance.ToString() + "ADA";
     }
 
     public void UpdateWalletName(string walletName)
@@ -121,13 +113,7 @@ public class Wallet : MonoBehaviour
 
     public void SetWalletAvailable(string walletAvailable)
     {
-        Debug.Log("walletAvailable");
-        Debug.Log(walletAvailable);
-
         string[] w = walletAvailable.Split(",");
-
-        Debug.Log(w[0]);
-        Debug.Log(w[w.Length - 1]);
         for (int i = 0; i < w.Length; i++)
         {
             CreateButton(w[i]);
@@ -137,7 +123,6 @@ public class Wallet : MonoBehaviour
 
     void CreateButton(string buttonText)
     {
-        Debug.Log("Create btn");
         // Create a new Button using the UI's Instantiate method
         GameObject btn = Instantiate(this.btnObj.gameObject, availableWallets.transform);
         Button action = btn.GetComponent<Button>();
@@ -145,16 +130,10 @@ public class Wallet : MonoBehaviour
 
         if (btn != null && btnText != null && action != null)
         {
-            Debug.Log("BTN IS NOT NULL");
             // Check if Text component already exists on the child object
             // Set the text of the newly created button
             btnText.text = buttonText;
-
-            // // Add the new button to the canvas
-            // btnObj.transform.SetParent(availableWallets.transform, false);
-
             action.onClick.AddListener(() => { Debug.Log("Button Clicked !"); Connect(buttonText); });
-
         }
         else
         {
